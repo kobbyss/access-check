@@ -1,3 +1,5 @@
+import officeBuild from "./assets/office-build.jpg";
+
 export interface Tier {
   id: "office" | "gaming" | "elite" | "custom";
   name: string;
@@ -35,7 +37,7 @@ export const tiers: Tier[] = [
     accent: "cyan",
     hex: "#22d3ee",
     image:
-      "https://images.pexels.com/photos/4009598/pexels-photo-4009598.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
+      officeBuild,
     useCase:
       "Perfect for home offices, students, and professionals who need a snappy, silent machine for browsing, documents, spreadsheets, and light creative work.",
     components: {
@@ -204,7 +206,7 @@ export const builds: Build[] = [
     title: "Neon Pulse",
     category: "RGB Showcase",
     image:
-      "https://images.pexels.com/photos/4009598/pexels-photo-4009598.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+      "https://images.pexels.com/photos/19012051/pexels-photo-19012051.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
     specs: "Ryzen 7 5800X3D · RTX 4070 · 32GB DDR4 · Custom Loop",
   },
   {
