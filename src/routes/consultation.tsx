@@ -289,27 +289,40 @@ function ConsultationPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-3">Desired PC Tier</label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {tiers.map((t, i) => {
                   const selected = tier === t.id;
                   return (
                     <button
                       key={t.id}
                       type="button"
-                      onClick={() => setTier(t.id)}
+                      onClick={() => pickTier(t.id)}
                       disabled={busy}
-                      className={`relative p-4 rounded-xl border text-left transition-all duration-300 disabled:opacity-50 ${
+                      className={`relative rounded-xl border text-left overflow-hidden transition-all duration-300 disabled:opacity-50 ${
                         selected
                           ? "border-accent-cyan/40 bg-accent-cyan/5 shadow-[0_0_20px_rgba(34,211,238,0.1)]"
                           : "border-white/[0.06] bg-ink-900/40 hover:border-white/10"
                       }`}
                     >
+                      <div className="relative h-24">
+                        <img
+                          src={t.image}
+                          alt={`${t.name} example build`}
+                          loading="lazy"
+                          className={`w-full h-full object-cover transition-opacity duration-300 ${selected ? "opacity-70" : "opacity-40"}`}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 to-transparent" />
+                      </div>
+                      <div className="p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-mono text-gray-500">Tier {i + 1}</span>
+                        <span className="text-xs font-mono text-gray-500">
+                          {t.id === "custom" ? "Custom / Upgrade" : `Tier ${i + 1}`}
+                        </span>
                         {selected && <Check className="w-4 h-4 text-accent-cyan" strokeWidth={2.5} />}
                       </div>
                       <div className="text-sm font-semibold text-white leading-tight">{t.name}</div>
                       <div className="text-xs text-gray-500 mt-1">{t.priceRange}</div>
+                      </div>
                     </button>
                   );
                 })}
@@ -321,6 +334,42 @@ function ConsultationPage() {
                 </p>
               )}
             </div>
+
+            {selectedTier && (
+              <div className="rounded-2xl border border-white/[0.06] bg-ink-900/40 p-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <Sliders className="w-4 h-4 text-accent-cyan" strokeWidth={1.75} />
+                  <h3 className="font-display font-semibold text-white text-base">
+                    Customize your part list
+                  </h3>
+                </div>
+                <p className="text-xs text-gray-500 mb-5">
+                  Keep our recommended spec for {selectedTier.name}, or swap any part. Leave anything you&apos;re unsure about on the recommended option — we&apos;ll advise in your quote.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {partMeta.map(({ key, label, icon: Icon }) => (
+                    <div key={key}>
+                      <label className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-gray-500 mb-2">
+                        <Icon className="w-3.5 h-3.5 text-accent-cyan" strokeWidth={1.5} />
+                        {label}
+                      </label>
+                      <select
+                        value={parts[key] ?? selectedTier.options[key][0]}
+                        onChange={(e) => setParts((p) => ({ ...p, [key]: e.target.value }))}
+                        disabled={busy}
+                        className="w-full px-3.5 py-3 rounded-xl bg-ink-950/60 border border-white/[0.06] text-sm text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:border-accent-cyan/40 focus:ring-accent-cyan/10 disabled:opacity-50 cursor-pointer"
+                      >
+                        {selectedTier.options[key].map((opt) => (
+                          <option key={opt} value={opt} className="bg-ink-900">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Budget Range</label>
