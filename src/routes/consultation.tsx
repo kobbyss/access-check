@@ -30,15 +30,15 @@ export const Route = createFileRoute("/consultation")({
   validateSearch: consultationSearchSchema,
   head: () => ({
     meta: [
-      { title: "Book a Consultation — KRUSH Custom PC Builds" },
+      { title: "Book a Consultation — KrushPC Custom PC Builds" },
       {
         name: "description",
         content: `Build your spec in three steps. Pay a $${CONSULTATION_FEE} consultation fee — credited toward your PC — and get a custom part list within 24–48 hours.`,
       },
-      { property: "og:title", content: "Book a Consultation — KRUSH Custom PC Builds" },
+      { property: "og:title", content: "Book a Consultation — KrushPC Custom PC Builds" },
       {
         property: "og:description",
-        content: "Pick a tier, customize every part, and start your KRUSH build.",
+        content: "Pick a tier, customize every part, and start your KrushPC build.",
       },
     ],
   }),
@@ -165,7 +165,7 @@ function ConsultationPage() {
         <div className="absolute inset-0">
           <img
             src={consultationHero}
-            alt="KRUSH build bench with PC components laid out"
+            alt="KrushPC build bench with PC components laid out"
             width={1600}
             height={800}
             className="w-full h-full object-cover opacity-20"

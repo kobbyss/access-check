@@ -5,17 +5,17 @@ import { tiers, type Tier } from "../data";
 export const Route = createFileRoute("/tiers")({
   head: () => ({
     meta: [
-      { title: "System Tiers — KRUSH Custom PC Builds" },
+      { title: "System Tiers — KrushPC Custom PC Builds" },
       {
         name: "description",
         content:
           "Three curated PC tiers: Office & Productivity, Mid-Grade Gaming, and Elite High-Frame. Each engineered for a specific performance bracket and fully customizable.",
       },
-      { property: "og:title", content: "System Tiers — KRUSH Custom PC Builds" },
+      { property: "og:title", content: "System Tiers — KrushPC Custom PC Builds" },
       {
         property: "og:description",
         content:
-          "Choose your performance tier — from silent productivity to 4K elite gaming. Every KRUSH build is hand-assembled and stress-tested.",
+          "Choose your performance tier — from silent productivity to 4K elite gaming. Every KrushPC build is hand-assembled and stress-tested.",
       },
     ],
   }),
@@ -127,7 +127,7 @@ function TiersPage() {
                   <div className="relative h-44 -mx-px -mt-px overflow-hidden">
                     <img
                       src={tier.image}
-                      alt={`${tier.name} custom PC build by KRUSH`}
+                      alt={`${tier.name} custom PC build by KrushPC`}
                       loading="lazy"
                       className="w-full h-full object-cover opacity-70 transition-transform duration-700 hover:scale-105"
                     />

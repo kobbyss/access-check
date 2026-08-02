@@ -6,13 +6,13 @@ import PcCaseVisual from "../components/PcCaseVisual";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "KRUSH — Hand-Built, Performance-Tuned Custom PCs" },
+      { title: "KrushPC — Hand-Built, Performance-Tuned Custom PCs" },
       {
         name: "description",
         content:
-          "KRUSH builds custom gaming and productivity PCs by hand. 72-hour stress testing, obsessive cable management, and component-matched builds tuned for peak performance.",
+          "KrushPC builds custom gaming and productivity PCs by hand. 72-hour stress testing, obsessive cable management, and component-matched builds tuned for peak performance.",
       },
-      { property: "og:title", content: "KRUSH — Hand-Built, Performance-Tuned Custom PCs" },
+      { property: "og:title", content: "KrushPC — Hand-Built, Performance-Tuned Custom PCs" },
       {
         property: "og:description",
         content:
