@@ -8,6 +8,7 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/tiers", label: "System Tiers" },
   { to: "/consultation", label: "Consultation" },
+  { to: "/support", label: "Support" },
 ] as const;
 
 export default function Navbar() {
