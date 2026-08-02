@@ -165,6 +165,14 @@ function ConsultationPage() {
   return (
     <div className="pt-16">
       <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={HERO_IMAGE}
+            alt="Liquid-cooled custom PC glowing in a dark studio"
+            className="w-full h-full object-cover opacity-25"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink-950/70 via-ink-950/85 to-ink-950" />
+        </div>
         <div className="absolute inset-0 bg-grid opacity-40" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] glow-radial-amber opacity-30" />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
@@ -178,6 +186,13 @@ function ConsultationPage() {
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-lg">
             From consultation to delivery, here&apos;s how our build process works.
           </p>
+          <div className="mt-8 inline-flex items-start gap-3 text-left glass px-5 py-4 max-w-xl">
+            <ShieldCheck className="w-5 h-5 text-accent-cyan flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+            <p className="text-sm text-gray-400 leading-relaxed">
+              <span className="text-white font-medium">${CONSULTATION_FEE} consultation fee.</span>{" "}
+              {CONSULTATION_FEE_POLICY}
+            </p>
+          </div>
         </div>
       </section>
 
