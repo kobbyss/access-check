@@ -35,7 +35,7 @@ export const tiers: Tier[] = [
     accent: "cyan",
     hex: "#22d3ee",
     image:
-      "https://images.pexels.com/photos/2063246/pexels-photo-2063246.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
+      "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
     useCase:
       "Perfect for home offices, students, and professionals who need a snappy, silent machine for browsing, documents, spreadsheets, and light creative work.",
     components: {
@@ -132,7 +132,7 @@ export const tiers: Tier[] = [
     accent: "ice",
     hex: "#7FE5FF",
     image:
-      "https://images.pexels.com/photos/777001/pexels-photo-777001.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
+      "https://images.pexels.com/photos/19012063/pexels-photo-19012063.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
     useCase:
       "For anyone who already has a machine and wants more out of it — GPU swaps, more memory, faster storage, better cooling, or a full re-build in a new case. We diagnose what's holding you back and only replace what actually helps.",
     components: {
@@ -196,7 +196,7 @@ export const builds: Build[] = [
     title: "Frost Workstation",
     category: "Creator Productivity",
     image:
-      "https://images.pexels.com/photos/777001/pexels-photo-777001.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+      "https://images.pexels.com/photos/19012063/pexels-photo-19012063.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
     specs: "Ryzen 9 7950X · RTX 4070 Ti · 64GB DDR5 · 2TB NVMe",
   },
   {
@@ -212,7 +212,7 @@ export const builds: Build[] = [
     title: "Silent Deck",
     category: "Office & Quiet Build",
     image:
-      "https://images.pexels.com/photos/2063246/pexels-photo-2063246.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+      "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
     specs: "i5-12400 · Integrated · 16GB DDR4 · 1TB NVMe",
   },
 ];
