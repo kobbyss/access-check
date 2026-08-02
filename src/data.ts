@@ -1,4 +1,13 @@
 import officeBuild from "./assets/office-build.jpg";
+import tierGaming from "./assets/tier-gaming.jpg";
+import tierElite from "./assets/tier-elite.jpg";
+import tierCustom from "./assets/tier-custom.jpg";
+import buildCryoStream from "./assets/build-cryo-stream.jpg";
+import buildStealthCube from "./assets/build-stealth-cube.jpg";
+import buildApexFrame from "./assets/build-apex-frame.jpg";
+import buildFrostWorkstation from "./assets/build-frost-workstation.jpg";
+import buildNeonPulse from "./assets/build-neon-pulse.jpg";
+import buildSilentDeck from "./assets/build-silent-deck.jpg";
 
 export interface Tier {
   id: "office" | "gaming" | "elite" | "custom";
@@ -26,6 +35,10 @@ export interface Tier {
   };
   features: string[];
   badge?: string;
+  /** Service paths (upgrade vs repair) — only used by the custom tier. */
+  services?: string[];
+  /** Common fault symptoms for repair jobs. */
+  symptoms?: string[];
 }
 
 export const tiers: Tier[] = [
@@ -69,8 +82,7 @@ export const tiers: Tier[] = [
     accent: "orange",
     hex: "#FF6B00",
     badge: "Most Popular",
-    image:
-      "https://images.pexels.com/photos/19012051/pexels-photo-19012051.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
+    image: tierGaming,
     useCase:
       "Built for gamers who want high-framerate 1440p gameplay, smooth streaming, and enough headroom for content creation on the side.",
     components: {
@@ -101,8 +113,7 @@ export const tiers: Tier[] = [
     priceRange: "$2,800 – $5,000+",
     accent: "amber",
     hex: "#FF9E00",
-    image:
-      "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
+    image: tierElite,
     useCase:
       "For enthusiasts and professionals who demand the absolute best — 4K ultra settings, simultaneous streaming, 3D rendering, and AI workloads without breaking a sweat.",
     components: {
@@ -128,15 +139,30 @@ export const tiers: Tier[] = [
   },
   {
     id: "custom",
-    name: "Custom & Upgrades",
-    tagline: "Upgrade the rig you already own, or design one from scratch.",
+    name: "Custom, Upgrades & Repairs",
+    tagline: "Upgrade, repair, or rebuild the rig you already own.",
     priceRange: "Quoted per job",
     accent: "ice",
     hex: "#7FE5FF",
-    image:
-      "https://images.pexels.com/photos/19012063/pexels-photo-19012063.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
+    image: tierCustom,
     useCase:
-      "For anyone who already has a machine and wants more out of it — GPU swaps, more memory, faster storage, better cooling, or a full re-build in a new case. We diagnose what's holding you back and only replace what actually helps.",
+      "For anyone who already has a machine and wants more out of it — GPU swaps, more memory, faster storage, better cooling, or a full re-build in a new case. We also take repair jobs: no-boot, crashing, overheating, or noisy systems get a full bench diagnosis first, and we only replace what actually needs replacing.",
+    services: [
+      "Upgrade my existing PC",
+      "Repair / diagnostics (something is wrong)",
+      "Upgrade + repair",
+      "Full rebuild in a new case",
+    ],
+    symptoms: [
+      "Won't power on / no display",
+      "Random crashes, freezes or blue screens",
+      "Overheating or thermal throttling",
+      "Loud fans or grinding noise",
+      "Very slow / stuttering performance",
+      "Storage failure or data recovery",
+      "Liquid cooler leak or pump failure",
+      "Not sure — needs diagnosis",
+    ],
     components: {
       cpu: "CPU / motherboard platform upgrade (kept or swapped)",
       gpu: "GPU upgrade sized to your monitor & PSU headroom",
@@ -152,10 +178,10 @@ export const tiers: Tier[] = [
       cooling: ["Keep my current cooling", "New air cooler + fan re-work", "AIO liquid cooler + cable re-do"],
     },
     features: [
-      "Free bottleneck diagnosis",
+      "Free bottleneck & fault diagnosis",
       "Reuse whatever still performs",
       "Data migration included",
-      "Cable re-work & re-test",
+      "Repairs, cable re-work & re-test",
     ],
   },
 ];
@@ -173,48 +199,42 @@ export const builds: Build[] = [
     id: 1,
     title: "Cryo-Stream Pro",
     category: "Liquid-Cooled Gaming",
-    image:
-      "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+    image: buildCryoStream,
     specs: "Ryzen 7 7800X3D · RTX 4080 · 32GB DDR5 · 360mm AIO",
   },
   {
     id: 2,
     title: "Stealth Cube",
     category: "Compact ITX Build",
-    image:
-      "https://images.pexels.com/photos/19012051/pexels-photo-19012051.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+    image: buildStealthCube,
     specs: "Ryzen 5 7600 · RTX 4070 · 32GB DDR5 · 240mm AIO",
   },
   {
     id: 3,
     title: "Apex Frame",
     category: "4K Elite Rig",
-    image:
-      "https://images.pexels.com/photos/19012063/pexels-photo-19012063.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+    image: buildApexFrame,
     specs: "i9-14900K · RTX 4090 · 64GB DDR5 · 4TB Gen5 NVMe",
   },
   {
     id: 4,
     title: "Frost Workstation",
     category: "Creator Productivity",
-    image:
-      "https://images.pexels.com/photos/19012051/pexels-photo-19012051.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+    image: buildFrostWorkstation,
     specs: "Ryzen 9 7950X · RTX 4070 Ti · 64GB DDR5 · 2TB NVMe",
   },
   {
     id: 5,
     title: "Neon Pulse",
     category: "RGB Showcase",
-    image:
-      "https://images.pexels.com/photos/19012051/pexels-photo-19012051.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+    image: buildNeonPulse,
     specs: "Ryzen 7 5800X3D · RTX 4070 · 32GB DDR4 · Custom Loop",
   },
   {
     id: 6,
     title: "Silent Deck",
     category: "Office & Quiet Build",
-    image:
-      "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+    image: buildSilentDeck,
     specs: "i5-12400 · Integrated · 16GB DDR4 · 1TB NVMe",
   },
 ];
