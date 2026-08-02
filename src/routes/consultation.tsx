@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { z } from "zod";
 import {
   ClipboardList,
@@ -22,8 +22,8 @@ import {
   Palette,
 } from "lucide-react";
 import { tiers } from "../data";
-import { supabase } from "@/integrations/supabase/client";
-import { STRIPE_PAYMENT_LINK, CONSULTATION_FEE, CONSULTATION_FEE_POLICY } from "../config";
+import { CONSULTATION_FEE, CONSULTATION_FEE_POLICY } from "../config";
+import { loadOrderDraft, saveOrderDraft } from "@/lib/order";
 import consultationHero from "../assets/consultation-hero.jpg";
 
 const consultationSearchSchema = z.object({ tier: z.string().optional() });
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/consultation")({
       { title: "Book a Consultation — KrushPC Custom PC Builds" },
       {
         name: "description",
-        content: `Build your spec in three steps. Pay a $${CONSULTATION_FEE} consultation fee — credited toward your PC — and get a custom part list within 24–48 hours.`,
+        content: `Build your spec in three steps and send it free. Optional $${CONSULTATION_FEE} guided consultation for anyone who wants help choosing — credited toward your PC.`,
       },
       { property: "og:title", content: "Book a Consultation — KrushPC Custom PC Builds" },
       {
@@ -74,10 +74,10 @@ const partMeta: {
 const steps = [
   { n: 1, label: "Your build", icon: Sliders },
   { n: 2, label: "Configure", icon: Cpu },
-  { n: 3, label: "Details & pay", icon: Receipt },
+  { n: 3, label: "Your details", icon: Receipt },
 ];
 
-type Status = "idle" | "submitting" | "redirecting" | "error";
+type Status = "idle" | "submitting" | "error";
 
 function ConsultationPage() {
   const navigate = useNavigate();
@@ -92,12 +92,29 @@ function ConsultationPage() {
   const [parts, setParts] = useState<Record<string, string>>({});
   const [service, setService] = useState("");
   const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [consultationType, setConsultationType] = useState<"free" | "guided">("free");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
 
+  // Restore a draft when coming back from the checkout page to edit something.
+  useEffect(() => {
+    const draft = loadOrderDraft();
+    if (!draft) return;
+    setName(draft.name);
+    setEmail(draft.email);
+    setBudget(draft.budget);
+    setCustomRequests(draft.customRequests);
+    setParts(draft.parts);
+    setService(draft.service);
+    setSymptoms(draft.symptoms);
+    setConsultationType(draft.consultationType);
+    if (!preselectedTier && draft.tier) setTier(draft.tier);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const selectedTier = tiers.find((t) => t.id === tier);
   const isRepairPath = Boolean(selectedTier?.symptoms) && service.toLowerCase().includes("repair");
-  const busy = status === "submitting" || status === "redirecting";
+  const busy = status === "submitting";
 
   const field =
     "w-full px-4 py-3.5 rounded-xl bg-ink-950/60 border border-white/[0.06] text-white placeholder-gray-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:border-accent-cyan/40 focus:ring-accent-cyan/10 disabled:opacity-50";
@@ -124,47 +141,30 @@ function ConsultationPage() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (ev: FormEvent) => {
+  const handleSubmit = (ev: FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
+    if (!selectedTier) return;
     setStatus("submitting");
 
-    try {
-      const partLines = Object.entries(parts)
-        .filter(([, v]) => v)
-        .map(([k, v]) => `${k.toUpperCase()}: ${v}`);
-      const notes = [
-        service ? `Service type: ${service}` : "",
-        symptoms.length ? `Reported symptoms —\n${symptoms.map((s) => `• ${s}`).join("\n")}` : "",
-        partLines.length ? `Custom part selections —\n${partLines.join("\n")}` : "",
-        customRequests.trim(),
-      ]
-        .filter(Boolean)
-        .join("\n\n");
-
-      const { error } = await supabase.from("consultations").insert({
-        name: name.trim(),
-        email: email.trim(),
-        tier,
-        budget,
-        custom_requests: notes || null,
-        payment_status: "pending",
-      });
-      if (error) console.error("Insert error:", error);
-
-      await new Promise((r) => setTimeout(r, 1200));
-      setStatus("redirecting");
-      await new Promise((r) => setTimeout(r, 600));
-
-      if (STRIPE_PAYMENT_LINK && !STRIPE_PAYMENT_LINK.includes("YOUR_PAYMENT_LINK_ID")) {
-        window.location.href = STRIPE_PAYMENT_LINK;
-      } else {
-        navigate({ to: "/success" });
-      }
-    } catch (err) {
-      console.error("Submission error:", err);
-      setStatus("error");
+    const resolvedParts: Record<string, string> = {};
+    for (const { key } of partMeta) {
+      resolvedParts[key] = parts[key] ?? selectedTier.options[key][0];
     }
+
+    saveOrderDraft({
+      tier,
+      service,
+      symptoms,
+      parts: resolvedParts,
+      name: name.trim(),
+      email: email.trim(),
+      budget,
+      customRequests: customRequests.trim(),
+      consultationType,
+    });
+
+    navigate({ to: "/checkout" });
   };
 
   return (
@@ -190,7 +190,7 @@ function ConsultationPage() {
             Configure your <span className="text-gradient-cyan">build</span>
           </h1>
           <p className="mt-5 text-gray-400 max-w-xl mx-auto">
-            Three quick steps. We turn it into a full part list and quote within 24–48 hours.
+            Three quick steps, free to send. We turn it into a full part list and quote within 24–48 hours.
           </p>
         </div>
       </section>
@@ -439,12 +439,60 @@ function ConsultationPage() {
                     />
                   </div>
 
-                  <div className="flex items-start gap-3 p-4 rounded-xl bg-accent-cyan/[0.06] border border-accent-cyan/15">
-                    <ShieldCheck className="w-5 h-5 text-accent-cyan flex-shrink-0 mt-0.5" strokeWidth={1.5} />
-                    <p className="text-sm text-gray-400 leading-relaxed">
-                      <span className="text-white font-medium">${CONSULTATION_FEE} consultation fee.</span>{" "}
-                      {CONSULTATION_FEE_POLICY}
-                    </p>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-3">
+                      How much help do you want?
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {([
+                        {
+                          value: "free" as const,
+                          title: "Send my request — free",
+                          blurb: "You know roughly what you want. We reply with a full part list and quote. No fee.",
+                        },
+                        {
+                          value: "guided" as const,
+                          title: `Guided consultation — $${CONSULTATION_FEE}`,
+                          blurb: "New to PCs? We walk you through every choice, explain the trade-offs, and spec it for you.",
+                        },
+                      ]).map((opt) => {
+                        const on = consultationType === opt.value;
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setConsultationType(opt.value)}
+                            disabled={busy}
+                            className={`text-left p-4 rounded-xl border transition-all ${
+                              on
+                                ? "border-accent-cyan/50 bg-accent-cyan/[0.08] shadow-[0_0_24px_rgba(34,211,238,0.10)]"
+                                : "border-white/[0.06] bg-ink-950/50 hover:border-white/15"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span
+                                className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                                  on ? "border-accent-cyan bg-accent-cyan" : "border-white/20"
+                                }`}
+                              >
+                                {on && <Check className="w-2.5 h-2.5 text-ink-950" strokeWidth={4} />}
+                              </span>
+                              <span className="text-sm font-medium text-white">{opt.title}</span>
+                            </div>
+                            <p className="text-xs text-gray-500 leading-relaxed">{opt.blurb}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {consultationType === "guided" && (
+                      <div className="mt-3 flex items-start gap-3 p-4 rounded-xl bg-accent-cyan/[0.06] border border-accent-cyan/15">
+                        <ShieldCheck className="w-5 h-5 text-accent-cyan flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <p className="text-sm text-gray-400 leading-relaxed">
+                          <span className="text-white font-medium">${CONSULTATION_FEE} consultation fee.</span>{" "}
+                          {CONSULTATION_FEE_POLICY}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   {status === "error" && (
@@ -462,15 +510,11 @@ function ConsultationPage() {
                     <button type="submit" disabled={busy} className="btn-primary flex-1 justify-center disabled:opacity-60">
                       {status === "submitting" ? (
                         <>
-                          <Loader2 className="w-4 h-4 animate-spin" /> Saving your build…
-                        </>
-                      ) : status === "redirecting" ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" /> Redirecting to payment…
+                          <Loader2 className="w-4 h-4 animate-spin" /> Preparing your order…
                         </>
                       ) : (
                         <>
-                          Proceed to ${CONSULTATION_FEE} Consultation Payment
+                          Review my order
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
@@ -516,11 +560,15 @@ function ConsultationPage() {
                 <p className="text-sm text-gray-500">Pick a starting point and your spec appears here.</p>
               )}
               <div className="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                <span className="text-xs text-gray-500">Consultation fee</span>
-                <span className="font-display font-bold text-white">${CONSULTATION_FEE}</span>
+                <span className="text-xs text-gray-500">Consultation</span>
+                <span className="font-display font-bold text-white">
+                  {consultationType === "guided" ? `$${CONSULTATION_FEE}` : "Free"}
+                </span>
               </div>
               <p className="text-[11px] text-gray-600 mt-2 leading-relaxed">
-                Credited toward your build. Only refundable if you go ahead with a purchase.
+                {consultationType === "guided"
+                  ? "Credited toward your build. Only refundable if you go ahead with a purchase."
+                  : "Sending your build request costs nothing. Add a guided consultation only if you want help choosing."}
               </p>
             </aside>
           </div>
