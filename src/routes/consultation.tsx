@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { tiers } from "../data";
 import { supabase } from "@/integrations/supabase/client";
-import { STRIPE_PAYMENT_LINK, CONSULTATION_FEE } from "../config";
+import { STRIPE_PAYMENT_LINK, CONSULTATION_FEE, CONSULTATION_FEE_POLICY } from "../config";
+import { Sliders, Cpu, Monitor, MemoryStick, HardDrive, Droplets } from "lucide-react";
 
 const consultationSearchSchema = z.object({
   tier: z.string().optional(),
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/consultation")({
       {
         name: "description",
         content:
-          "Tell us about your dream build. Submit your intake form and pay a refundable $30 consultation fee to receive a custom part list within 24–48 hours.",
+          `Tell us about your dream build. Submit your intake form and pay a $${CONSULTATION_FEE} consultation fee — credited toward your PC — to receive a custom part list within 24–48 hours.`,
       },
       { property: "og:title", content: "Book a Consultation — KRUSH Custom PC Builds" },
       {
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/consultation")({
 });
 
 const timelineSteps = [
-  { icon: DollarSign, title: "Consultation Fee", description: `Pay a $${CONSULTATION_FEE} refundable fee to begin your custom build journey.`, accent: "cyan" },
+  { icon: DollarSign, title: "Consultation Fee", description: `Pay a $${CONSULTATION_FEE} fee to begin. It goes straight into your PC — the full amount comes off your build price. It's only refundable if you go ahead with a build.`, accent: "cyan" },
   { icon: ClipboardList, title: "Custom Part List", description: "We generate a tailored component list based on your needs and budget.", accent: "cyan" },
   { icon: CreditCard, title: "Deposit", description: "Review and approve your spec sheet, then place a deposit on parts.", accent: "orange" },
   { icon: PackageCheck, title: "Sourcing", description: "We source all components from trusted suppliers at the best prices.", accent: "orange" },
@@ -69,6 +70,17 @@ const budgetRanges = [
   "$5,000+",
 ];
 
+const HERO_IMAGE =
+  "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1";
+
+const partMeta: { key: "cpu" | "gpu" | "ram" | "storage" | "cooling"; label: string; icon: typeof Cpu }[] = [
+  { key: "cpu", label: "Processor", icon: Cpu },
+  { key: "gpu", label: "Graphics", icon: Monitor },
+  { key: "ram", label: "Memory", icon: MemoryStick },
+  { key: "storage", label: "Storage", icon: HardDrive },
+  { key: "cooling", label: "Cooling", icon: Droplets },
+];
+
 type Status = "idle" | "submitting" | "redirecting" | "error";
 
 function ConsultationPage() {
@@ -80,8 +92,16 @@ function ConsultationPage() {
   const [tier, setTier] = useState<string>(preselectedTier ?? "");
   const [budget, setBudget] = useState("");
   const [customRequests, setCustomRequests] = useState("");
+  const [parts, setParts] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
+
+  const selectedTier = tiers.find((t) => t.id === tier);
+
+  const pickTier = (id: string) => {
+    setTier(id);
+    setParts({});
+  };
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -104,12 +124,22 @@ function ConsultationPage() {
     setStatus("submitting");
 
     try {
+      const partLines = Object.entries(parts)
+        .filter(([, v]) => v)
+        .map(([k, v]) => `${k.toUpperCase()}: ${v}`);
+      const notes = [
+        partLines.length ? `Custom part selections —\n${partLines.join("\n")}` : "",
+        customRequests.trim(),
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
       const { error } = await supabase.from("consultations").insert({
         name: name.trim(),
         email: email.trim(),
         tier,
         budget,
-        custom_requests: customRequests.trim() || null,
+        custom_requests: notes || null,
         payment_status: "pending",
       });
 
