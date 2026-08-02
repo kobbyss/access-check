@@ -13,6 +13,7 @@ import { Route as TiersRouteImport } from './routes/tiers'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SuccessRouteImport } from './routes/success'
 import { Route as ConsultationRouteImport } from './routes/consultation'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TiersRoute = TiersRouteImport.update({
@@ -35,6 +36,11 @@ const ConsultationRoute = ConsultationRouteImport.update({
   path: '/consultation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/consultation': typeof ConsultationRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/consultation': typeof ConsultationRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/consultation': typeof ConsultationRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -65,14 +74,28 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/consultation' | '/success' | '/support' | '/tiers'
+  fullPaths:
+    | '/'
+    | '/checkout'
+    | '/consultation'
+    | '/success'
+    | '/support'
+    | '/tiers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/consultation' | '/success' | '/support' | '/tiers'
-  id: '__root__' | '/' | '/consultation' | '/success' | '/support' | '/tiers'
+  to: '/' | '/checkout' | '/consultation' | '/success' | '/support' | '/tiers'
+  id:
+    | '__root__'
+    | '/'
+    | '/checkout'
+    | '/consultation'
+    | '/success'
+    | '/support'
+    | '/tiers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckoutRoute: typeof CheckoutRoute
   ConsultationRoute: typeof ConsultationRoute
   SuccessRoute: typeof SuccessRoute
   SupportRoute: typeof SupportRoute
@@ -109,6 +132,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsultationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +151,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckoutRoute: CheckoutRoute,
   ConsultationRoute: ConsultationRoute,
   SuccessRoute: SuccessRoute,
   SupportRoute: SupportRoute,
