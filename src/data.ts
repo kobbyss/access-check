@@ -75,7 +75,6 @@ export const tiers: Tier[] = [
       formFactor: [
         "Micro-ATX — smaller PC (recommended)",
         "Full ATX — big tower, more room to upgrade",
-        "Mini-ITX — smallest possible",
       ],
       pcCase: [
         "Black solid-panel case (recommended)",
@@ -126,7 +125,6 @@ export const tiers: Tier[] = [
       formFactor: [
         "Full ATX — big tower (recommended)",
         "Micro-ATX — smaller PC",
-        "Mini-ITX — smallest possible",
       ],
       pcCase: [
         "Black mesh airflow case (recommended)",
@@ -182,7 +180,6 @@ export const tiers: Tier[] = [
       formFactor: [
         "Full ATX — big flagship tower (recommended)",
         "Micro-ATX — smaller PC, same power",
-        "Mini-ITX — smallest possible",
       ],
       pcCase: [
         "Black showcase case, dual glass panels (recommended)",
@@ -248,7 +245,6 @@ export const tiers: Tier[] = [
         "Keep my current case size",
         "Move to Full ATX — bigger PC",
         "Move to Micro-ATX — smaller PC",
-        "Move to Mini-ITX — smallest possible",
       ],
       pcCase: [
         "Keep my current case",
@@ -286,7 +282,7 @@ export const builds: Build[] = [
   {
     id: 2,
     title: "Stealth Cube",
-    category: "Compact ITX Build",
+    category: "Compact Micro-ATX Build",
     image: buildStealthCube,
     specs: "Ryzen 5 7600 · RTX 4070 · 32GB DDR5 · 240mm AIO",
   },
