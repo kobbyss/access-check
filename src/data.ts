@@ -35,7 +35,7 @@ export const tiers: Tier[] = [
     accent: "cyan",
     hex: "#22d3ee",
     image:
-      "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
+      "https://images.pexels.com/photos/2693208/pexels-photo-2693208.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1",
     useCase:
       "Perfect for home offices, students, and professionals who need a snappy, silent machine for browsing, documents, spreadsheets, and light creative work.",
     components: {
@@ -196,7 +196,7 @@ export const builds: Build[] = [
     title: "Frost Workstation",
     category: "Creator Productivity",
     image:
-      "https://images.pexels.com/photos/19012063/pexels-photo-19012063.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
+      "https://images.pexels.com/photos/19012051/pexels-photo-19012051.jpeg?auto=compress&cs=tinysrgb&w=1260&h=800&dpr=1",
     specs: "Ryzen 9 7950X · RTX 4070 Ti · 64GB DDR5 · 2TB NVMe",
   },
   {
