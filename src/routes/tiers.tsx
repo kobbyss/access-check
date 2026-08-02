@@ -50,6 +50,14 @@ const accentClasses: Record<
     bgHover: "hover:bg-accent-amber/5",
     badge: "bg-accent-amber/15 text-accent-amber",
   },
+  ice: {
+    text: "text-accent-ice",
+    border: "border-accent-ice/30",
+    glow: "glow-border-cyan",
+    bg: "bg-accent-ice/10",
+    bgHover: "hover:bg-accent-ice/5",
+    badge: "bg-accent-ice/15 text-accent-ice",
+  },
 };
 
 const componentIcons = {
@@ -88,27 +96,27 @@ function TiersPage() {
             Choose your <span className="text-gradient-cyan">performance tier</span>
           </h1>
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-lg">
-            Three carefully curated tiers, each engineered for a specific performance bracket. Every build is fully customizable.
+            Three curated tiers plus a fully custom upgrade path. Every build is customizable part by part.
           </p>
         </div>
       </section>
 
       <section className="relative pb-12">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-4 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-4 items-stretch">
             {tiers.map((tier, i) => {
               const c = accentClasses[tier.accent];
               const isFeatured = tier.badge === "Most Popular";
               return (
                 <div
                   key={tier.id}
-                  className={`relative glass ${c.glow} p-8 flex flex-col ${
-                    isFeatured ? "lg:scale-[1.04] lg:z-10 border-white/10" : ""
+                  className={`relative glass ${c.glow} overflow-hidden flex flex-col ${
+                    isFeatured ? "xl:scale-[1.04] xl:z-10 border-white/10" : ""
                   }`}
                   style={{ animationDelay: `${i * 0.1}s` }}
                 >
                   {tier.badge && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20">
                       <div className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono font-medium ${c.badge}`}>
                         <Star className="w-3 h-3 fill-current" />
                         {tier.badge}
@@ -116,9 +124,20 @@ function TiersPage() {
                     </div>
                   )}
 
-                  <div className={`mb-6 ${isFeatured ? "mt-4" : ""}`}>
+                  <div className="relative h-44 -mx-px -mt-px overflow-hidden">
+                    <img
+                      src={tier.image}
+                      alt={`${tier.name} custom PC build by KRUSH`}
+                      loading="lazy"
+                      className="w-full h-full object-cover opacity-70 transition-transform duration-700 hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent" />
+                  </div>
+
+                  <div className="p-8 flex flex-col flex-1">
+                  <div className="mb-6">
                     <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-mono ${c.bg} ${c.text} mb-4`}>
-                      Tier {i + 1}
+                      {tier.id === "custom" ? "Custom" : `Tier ${i + 1}`}
                     </div>
                     <h3 className="font-display font-bold text-2xl text-white mb-2">{tier.name}</h3>
                     <p className="text-sm text-gray-400 leading-relaxed">{tier.tagline}</p>
@@ -150,6 +169,7 @@ function TiersPage() {
                   >
                     Select {tier.name.split(" ")[0]}
                   </button>
+                  </div>
                 </div>
               );
             })}
@@ -177,10 +197,18 @@ function TiersPage() {
               const c = accentClasses[tier.accent];
               return (
                 <div key={tier.id} className={`glass ${c.glow} p-8 lg:p-10`}>
+                  <div className="mb-8 rounded-xl overflow-hidden border border-white/[0.06] h-40 sm:h-52">
+                    <img
+                      src={tier.image}
+                      alt={`${tier.name} build example`}
+                      loading="lazy"
+                      className="w-full h-full object-cover opacity-80"
+                    />
+                  </div>
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
                     <div className="flex items-center gap-4">
                       <div className={`w-12 h-12 rounded-xl ${c.bg} flex items-center justify-center font-display font-bold text-xl ${c.text}`}>
-                        {i + 1}
+                        {tier.id === "custom" ? "+" : i + 1}
                       </div>
                       <div>
                         <h3 className="font-display font-bold text-xl text-white">{tier.name}</h3>

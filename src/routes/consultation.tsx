@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { tiers } from "../data";
 import { supabase } from "@/integrations/supabase/client";
-import { STRIPE_PAYMENT_LINK, CONSULTATION_FEE } from "../config";
+import { STRIPE_PAYMENT_LINK, CONSULTATION_FEE, CONSULTATION_FEE_POLICY } from "../config";
+import { Sliders, Cpu, Monitor, MemoryStick, HardDrive, Droplets } from "lucide-react";
 
 const consultationSearchSchema = z.object({
   tier: z.string().optional(),
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/consultation")({
       {
         name: "description",
         content:
-          "Tell us about your dream build. Submit your intake form and pay a refundable $30 consultation fee to receive a custom part list within 24–48 hours.",
+          `Tell us about your dream build. Submit your intake form and pay a $${CONSULTATION_FEE} consultation fee — credited toward your PC — to receive a custom part list within 24–48 hours.`,
       },
       { property: "og:title", content: "Book a Consultation — KRUSH Custom PC Builds" },
       {
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/consultation")({
 });
 
 const timelineSteps = [
-  { icon: DollarSign, title: "Consultation Fee", description: `Pay a $${CONSULTATION_FEE} refundable fee to begin your custom build journey.`, accent: "cyan" },
+  { icon: DollarSign, title: "Consultation Fee", description: `Pay a $${CONSULTATION_FEE} fee to begin. It goes straight into your PC — the full amount comes off your build price. It's only refundable if you go ahead with a build.`, accent: "cyan" },
   { icon: ClipboardList, title: "Custom Part List", description: "We generate a tailored component list based on your needs and budget.", accent: "cyan" },
   { icon: CreditCard, title: "Deposit", description: "Review and approve your spec sheet, then place a deposit on parts.", accent: "orange" },
   { icon: PackageCheck, title: "Sourcing", description: "We source all components from trusted suppliers at the best prices.", accent: "orange" },
@@ -69,6 +70,17 @@ const budgetRanges = [
   "$5,000+",
 ];
 
+const HERO_IMAGE =
+  "https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1";
+
+const partMeta: { key: "cpu" | "gpu" | "ram" | "storage" | "cooling"; label: string; icon: typeof Cpu }[] = [
+  { key: "cpu", label: "Processor", icon: Cpu },
+  { key: "gpu", label: "Graphics", icon: Monitor },
+  { key: "ram", label: "Memory", icon: MemoryStick },
+  { key: "storage", label: "Storage", icon: HardDrive },
+  { key: "cooling", label: "Cooling", icon: Droplets },
+];
+
 type Status = "idle" | "submitting" | "redirecting" | "error";
 
 function ConsultationPage() {
@@ -80,8 +92,16 @@ function ConsultationPage() {
   const [tier, setTier] = useState<string>(preselectedTier ?? "");
   const [budget, setBudget] = useState("");
   const [customRequests, setCustomRequests] = useState("");
+  const [parts, setParts] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
+
+  const selectedTier = tiers.find((t) => t.id === tier);
+
+  const pickTier = (id: string) => {
+    setTier(id);
+    setParts({});
+  };
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -104,12 +124,22 @@ function ConsultationPage() {
     setStatus("submitting");
 
     try {
+      const partLines = Object.entries(parts)
+        .filter(([, v]) => v)
+        .map(([k, v]) => `${k.toUpperCase()}: ${v}`);
+      const notes = [
+        partLines.length ? `Custom part selections —\n${partLines.join("\n")}` : "",
+        customRequests.trim(),
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
       const { error } = await supabase.from("consultations").insert({
         name: name.trim(),
         email: email.trim(),
         tier,
         budget,
-        custom_requests: customRequests.trim() || null,
+        custom_requests: notes || null,
         payment_status: "pending",
       });
 
@@ -135,6 +165,14 @@ function ConsultationPage() {
   return (
     <div className="pt-16">
       <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={HERO_IMAGE}
+            alt="Liquid-cooled custom PC glowing in a dark studio"
+            className="w-full h-full object-cover opacity-25"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink-950/70 via-ink-950/85 to-ink-950" />
+        </div>
         <div className="absolute inset-0 bg-grid opacity-40" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] glow-radial-amber opacity-30" />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
@@ -148,6 +186,13 @@ function ConsultationPage() {
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-lg">
             From consultation to delivery, here&apos;s how our build process works.
           </p>
+          <div className="mt-8 inline-flex items-start gap-3 text-left glass px-5 py-4 max-w-xl">
+            <ShieldCheck className="w-5 h-5 text-accent-cyan flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+            <p className="text-sm text-gray-400 leading-relaxed">
+              <span className="text-white font-medium">${CONSULTATION_FEE} consultation fee.</span>{" "}
+              {CONSULTATION_FEE_POLICY}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -244,27 +289,40 @@ function ConsultationPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-3">Desired PC Tier</label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {tiers.map((t, i) => {
                   const selected = tier === t.id;
                   return (
                     <button
                       key={t.id}
                       type="button"
-                      onClick={() => setTier(t.id)}
+                      onClick={() => pickTier(t.id)}
                       disabled={busy}
-                      className={`relative p-4 rounded-xl border text-left transition-all duration-300 disabled:opacity-50 ${
+                      className={`relative rounded-xl border text-left overflow-hidden transition-all duration-300 disabled:opacity-50 ${
                         selected
                           ? "border-accent-cyan/40 bg-accent-cyan/5 shadow-[0_0_20px_rgba(34,211,238,0.1)]"
                           : "border-white/[0.06] bg-ink-900/40 hover:border-white/10"
                       }`}
                     >
+                      <div className="relative h-24">
+                        <img
+                          src={t.image}
+                          alt={`${t.name} example build`}
+                          loading="lazy"
+                          className={`w-full h-full object-cover transition-opacity duration-300 ${selected ? "opacity-70" : "opacity-40"}`}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 to-transparent" />
+                      </div>
+                      <div className="p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-mono text-gray-500">Tier {i + 1}</span>
+                        <span className="text-xs font-mono text-gray-500">
+                          {t.id === "custom" ? "Custom / Upgrade" : `Tier ${i + 1}`}
+                        </span>
                         {selected && <Check className="w-4 h-4 text-accent-cyan" strokeWidth={2.5} />}
                       </div>
                       <div className="text-sm font-semibold text-white leading-tight">{t.name}</div>
                       <div className="text-xs text-gray-500 mt-1">{t.priceRange}</div>
+                      </div>
                     </button>
                   );
                 })}
@@ -276,6 +334,42 @@ function ConsultationPage() {
                 </p>
               )}
             </div>
+
+            {selectedTier && (
+              <div className="rounded-2xl border border-white/[0.06] bg-ink-900/40 p-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <Sliders className="w-4 h-4 text-accent-cyan" strokeWidth={1.75} />
+                  <h3 className="font-display font-semibold text-white text-base">
+                    Customize your part list
+                  </h3>
+                </div>
+                <p className="text-xs text-gray-500 mb-5">
+                  Keep our recommended spec for {selectedTier.name}, or swap any part. Leave anything you&apos;re unsure about on the recommended option — we&apos;ll advise in your quote.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {partMeta.map(({ key, label, icon: Icon }) => (
+                    <div key={key}>
+                      <label className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-gray-500 mb-2">
+                        <Icon className="w-3.5 h-3.5 text-accent-cyan" strokeWidth={1.5} />
+                        {label}
+                      </label>
+                      <select
+                        value={parts[key] ?? selectedTier.options[key][0]}
+                        onChange={(e) => setParts((p) => ({ ...p, [key]: e.target.value }))}
+                        disabled={busy}
+                        className="w-full px-3.5 py-3 rounded-xl bg-ink-950/60 border border-white/[0.06] text-sm text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:border-accent-cyan/40 focus:ring-accent-cyan/10 disabled:opacity-50 cursor-pointer"
+                      >
+                        {selectedTier.options[key].map((opt) => (
+                          <option key={opt} value={opt} className="bg-ink-900">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Budget Range</label>
@@ -350,7 +444,7 @@ function ConsultationPage() {
               </button>
               <p className="mt-4 text-center text-xs text-gray-600 flex items-center justify-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Secure checkout via Stripe. Fee is applied toward your final build.
+                Secure checkout via Stripe. The ${CONSULTATION_FEE} goes into your PC — refundable only if you go ahead with a build.
               </p>
             </div>
           </form>
