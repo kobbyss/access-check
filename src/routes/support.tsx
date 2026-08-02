@@ -21,13 +21,13 @@ import supportHero from "../assets/support-hero.jpg";
 export const Route = createFileRoute("/support")({
   head: () => ({
     meta: [
-      { title: "Support & Troubleshooting Portal — KRUSH" },
+      { title: "Support & Troubleshooting Portal — KrushPC" },
       {
         name: "description",
         content:
-          "Already bought a KRUSH build or had a repair done? Open a support ticket, track your issue, and browse our troubleshooting guides for boot, thermal, and performance problems.",
+          "Already bought a KrushPC build or had a repair done? Open a support ticket, track your issue, and browse our troubleshooting guides for boot, thermal, and performance problems.",
       },
-      { property: "og:title", content: "Support & Troubleshooting Portal — KRUSH" },
+      { property: "og:title", content: "Support & Troubleshooting Portal — KrushPC" },
       {
         property: "og:description",
         content:
@@ -177,7 +177,7 @@ function SupportPage() {
         <div className="absolute inset-0">
           <img
             src={supportHero}
-            alt="KRUSH support bench with diagnostics running"
+            alt="KrushPC support bench with diagnostics running"
             width={1600}
             height={800}
             className="w-full h-full object-cover opacity-25"
@@ -195,7 +195,7 @@ function SupportPage() {
           </h1>
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-lg">
             Bought a build or had a repair done with us? Work through the guides below, and open a
-            ticket any time — every KRUSH customer gets direct support for the life of the machine.
+            ticket any time — every KrushPC customer gets direct support for the life of the machine.
           </p>
         </div>
       </section>

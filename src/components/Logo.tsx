@@ -6,13 +6,13 @@ interface LogoProps {
   size?: number;
 }
 
-/** KRUSH shield mark. */
+/** KrushPC shield mark. */
 export default function Logo({ className = "", showText = true, size = 32 }: LogoProps) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <img
         src={krushMark}
-        alt="KRUSH logo"
+        alt="KrushPC logo"
         width={size}
         height={size}
         style={{ width: size, height: size }}
@@ -23,6 +23,7 @@ export default function Logo({ className = "", showText = true, size = 32 }: Log
         <span className="font-display font-bold text-lg tracking-[0.18em] text-white">
           <span className="text-accent-cyan">KRU</span>
           <span className="text-accent-orange">SH</span>
+          <span className="text-white/80">PC</span>
         </span>
       )}
     </div>

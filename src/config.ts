@@ -16,7 +16,7 @@ export const CONSULTATION_FEE_POLICY =
   "The fee is credited toward your build — it comes off the final price of your PC. It is only refundable if you go ahead with a build; it is not refunded if you decide not to purchase.";
 
 /** Business / brand name. */
-export const BRAND_NAME = "KRUSH";
+export const BRAND_NAME = "KrushPC";
 
 /** Contact email shown on the success page. */
 export const CONTACT_EMAIL = "builds@krush.pc";

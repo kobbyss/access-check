@@ -9,7 +9,7 @@ export const Route = createFileRoute("/success")({
       {
         name: "description",
         content:
-          "Your KRUSH consultation payment is confirmed. Our team will send your custom PC part list within 24–48 hours.",
+          "Your KrushPC consultation payment is confirmed. Our team will send your custom PC part list within 24–48 hours.",
       },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: `Consultation Confirmed — ${BRAND_NAME}` },
