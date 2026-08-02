@@ -18,6 +18,8 @@ import {
   Wrench,
   User,
   Receipt,
+  Box,
+  Palette,
 } from "lucide-react";
 import { tiers } from "../data";
 import { supabase } from "@/integrations/supabase/client";
