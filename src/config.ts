@@ -3,7 +3,7 @@
  */
 
 /** Paste your Stripe Payment Link URL here. The consultation form's
- *  "Proceed to $30 Consultation Payment" button will redirect here
+ *  "Proceed to $15 Consultation Payment" button will redirect here
  *  after validating the form and saving the submission. */
 export const STRIPE_PAYMENT_LINK =
   "https://buy.stripe.com/YOUR_PAYMENT_LINK_ID";
