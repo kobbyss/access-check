@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TiersRouteImport } from './routes/tiers'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as SuccessRouteImport } from './routes/success'
 import { Route as ConsultationRouteImport } from './routes/consultation'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const TiersRoute = TiersRouteImport.update({
   id: '/tiers',
   path: '/tiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SuccessRoute = SuccessRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/consultation': typeof ConsultationRoute
   '/success': typeof SuccessRoute
+  '/support': typeof SupportRoute
   '/tiers': typeof TiersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/consultation': typeof ConsultationRoute
   '/success': typeof SuccessRoute
+  '/support': typeof SupportRoute
   '/tiers': typeof TiersRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/consultation': typeof ConsultationRoute
   '/success': typeof SuccessRoute
+  '/support': typeof SupportRoute
   '/tiers': typeof TiersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/consultation' | '/success' | '/tiers'
+  fullPaths: '/' | '/consultation' | '/success' | '/support' | '/tiers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/consultation' | '/success' | '/tiers'
-  id: '__root__' | '/' | '/consultation' | '/success' | '/tiers'
+  to: '/' | '/consultation' | '/success' | '/support' | '/tiers'
+  id: '__root__' | '/' | '/consultation' | '/success' | '/support' | '/tiers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConsultationRoute: typeof ConsultationRoute
   SuccessRoute: typeof SuccessRoute
+  SupportRoute: typeof SupportRoute
   TiersRoute: typeof TiersRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/tiers'
       fullPath: '/tiers'
       preLoaderRoute: typeof TiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/success': {
@@ -106,8 +123,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConsultationRoute: ConsultationRoute,
   SuccessRoute: SuccessRoute,
+  SupportRoute: SupportRoute,
   TiersRoute: TiersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
