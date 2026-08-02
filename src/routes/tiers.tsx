@@ -96,7 +96,7 @@ function TiersPage() {
             Choose your <span className="text-gradient-cyan">performance tier</span>
           </h1>
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-lg">
-            Three carefully curated tiers, each engineered for a specific performance bracket. Every build is fully customizable.
+            Three curated tiers plus a fully custom upgrade path. Every build is customizable part by part.
           </p>
         </div>
       </section>
