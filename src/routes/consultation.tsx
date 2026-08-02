@@ -55,7 +55,13 @@ const budgetRanges = [
   "$5,000+",
 ];
 
-const partMeta: { key: "cpu" | "gpu" | "ram" | "storage" | "cooling"; label: string; icon: typeof Cpu }[] = [
+const partMeta: {
+  key: "formFactor" | "pcCase" | "cpu" | "gpu" | "ram" | "storage" | "cooling";
+  label: string;
+  icon: typeof Cpu;
+}[] = [
+  { key: "formFactor", label: "Size (big or small PC)", icon: Box },
+  { key: "pcCase", label: "Case & Colour", icon: Palette },
   { key: "cpu", label: "Processor", icon: Cpu },
   { key: "gpu", label: "Graphics", icon: Monitor },
   { key: "ram", label: "Memory", icon: MemoryStick },

@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check, Cpu, Monitor, MemoryStick, HardDrive, Droplets, ArrowRight, Star } from "lucide-react";
+import { Check, Cpu, Monitor, MemoryStick, HardDrive, Droplets, ArrowRight, Star, Box, Palette } from "lucide-react";
 import { tiers, type Tier } from "../data";
 
 export const Route = createFileRoute("/tiers")({
@@ -66,6 +66,8 @@ const componentIcons = {
   ram: MemoryStick,
   storage: HardDrive,
   cooling: Droplets,
+  formFactor: Box,
+  pcCase: Palette,
 };
 
 const componentLabels: Record<keyof Tier["components"], string> = {
@@ -74,6 +76,8 @@ const componentLabels: Record<keyof Tier["components"], string> = {
   ram: "Memory (RAM)",
   storage: "Storage",
   cooling: "Cooling",
+  formFactor: "Size / Form Factor",
+  pcCase: "Case & Colour",
 };
 
 function TiersPage() {
