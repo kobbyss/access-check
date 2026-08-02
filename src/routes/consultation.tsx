@@ -444,7 +444,7 @@ function ConsultationPage() {
               </button>
               <p className="mt-4 text-center text-xs text-gray-600 flex items-center justify-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Secure checkout via Stripe. Fee is applied toward your final build.
+                Secure checkout via Stripe. The ${CONSULTATION_FEE} goes into your PC — refundable only if you go ahead with a build.
               </p>
             </div>
           </form>
