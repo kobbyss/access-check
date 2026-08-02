@@ -48,6 +48,8 @@ function AuthPage() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        // First account to sign in becomes the site owner; afterwards this is a no-op.
+        await supabase.rpc("claim_owner");
         navigate({ to: "/gallery" });
       } else {
         const { data, error } = await supabase.auth.signUp({
@@ -56,7 +58,10 @@ function AuthPage() {
           options: { emailRedirectTo: window.location.origin + "/gallery" },
         });
         if (error) throw error;
-        if (data.session) navigate({ to: "/gallery" });
+        if (data.session) {
+          await supabase.rpc("claim_owner");
+          navigate({ to: "/gallery" });
+        }
         else setNotice("Check your email to confirm the account, then sign in.");
       }
     } catch (err) {
