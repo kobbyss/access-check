@@ -23,6 +23,7 @@ export default function Logo({ className = "", showText = true, size = 32 }: Log
         <span className="font-display font-bold text-lg tracking-[0.18em] text-white">
           <span className="text-accent-cyan">KRU</span>
           <span className="text-accent-orange">SH</span>
+          <span className="text-white/80">PC</span>
         </span>
       )}
     </div>
