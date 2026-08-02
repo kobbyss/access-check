@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TiersRouteImport } from './routes/tiers'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SuccessRouteImport } from './routes/success'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ConsultationRouteImport } from './routes/consultation'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -30,6 +31,11 @@ const SupportRoute = SupportRouteImport.update({
 const SuccessRoute = SuccessRouteImport.update({
   id: '/success',
   path: '/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsultationRoute = ConsultationRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
   '/consultation': typeof ConsultationRoute
+  '/gallery': typeof GalleryRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
   '/tiers': typeof TiersRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
   '/consultation': typeof ConsultationRoute
+  '/gallery': typeof GalleryRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
   '/tiers': typeof TiersRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
   '/consultation': typeof ConsultationRoute
+  '/gallery': typeof GalleryRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
   '/tiers': typeof TiersRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/checkout'
     | '/consultation'
+    | '/gallery'
     | '/success'
     | '/support'
     | '/tiers'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/checkout'
     | '/consultation'
+    | '/gallery'
     | '/success'
     | '/support'
     | '/tiers'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/checkout'
     | '/consultation'
+    | '/gallery'
     | '/success'
     | '/support'
     | '/tiers'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CheckoutRoute: typeof CheckoutRoute
   ConsultationRoute: typeof ConsultationRoute
+  GalleryRoute: typeof GalleryRoute
   SuccessRoute: typeof SuccessRoute
   SupportRoute: typeof SupportRoute
   TiersRoute: typeof TiersRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/success'
       fullPath: '/success'
       preLoaderRoute: typeof SuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consultation': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CheckoutRoute: CheckoutRoute,
   ConsultationRoute: ConsultationRoute,
+  GalleryRoute: GalleryRoute,
   SuccessRoute: SuccessRoute,
   SupportRoute: SupportRoute,
   TiersRoute: TiersRoute,

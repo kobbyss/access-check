@@ -1,18 +1,24 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { CheckCircle2, Mail, Clock, ArrowRight, Home as HomeIcon } from "lucide-react";
 import { BRAND_NAME, CONTACT_EMAIL } from "../config";
 
+const successSearchSchema = z.object({
+  type: z.enum(["free", "guided"]).optional(),
+});
+
 export const Route = createFileRoute("/success")({
+  validateSearch: successSearchSchema,
   head: () => ({
     meta: [
-      { title: `Consultation Confirmed — ${BRAND_NAME}` },
+      { title: `Request Received — ${BRAND_NAME}` },
       {
         name: "description",
         content:
-          "Your KrushPC consultation payment is confirmed. Our team will send your custom PC part list within 24–48 hours.",
+          "Your KrushPC build request is in. Our team will send your custom PC part list within 24–48 hours.",
       },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: `Consultation Confirmed — ${BRAND_NAME}` },
+      { property: "og:title", content: `Request Received — ${BRAND_NAME}` },
       { property: "og:description", content: "Your custom PC build journey has begun." },
     ],
   }),
@@ -21,6 +27,8 @@ export const Route = createFileRoute("/success")({
 
 function SuccessPage() {
   const navigate = useNavigate();
+  const { type } = Route.useSearch();
+  const guided = type === "guided";
   return (
     <div className="pt-16 min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-30" />
@@ -37,7 +45,7 @@ function SuccessPage() {
 
         <div className="kicker mb-4 justify-center animate-fade-in-down">
           <CheckCircle2 className="w-3.5 h-3.5" />
-          Payment Confirmed
+          {guided ? "Consultation Requested" : "Request Received"}
         </div>
 
         <h1 className="font-display font-bold text-4xl sm:text-5xl text-white tracking-tight animate-fade-in-up">
@@ -45,7 +53,10 @@ function SuccessPage() {
         </h1>
 
         <p className="mt-6 text-lg text-gray-400 leading-relaxed max-w-xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          Your consultation payment has been received. Our team will review your requirements and reach out within{" "}
+          {guided
+            ? "Your guided consultation request is in — we'll be in touch to arrange the $15 fee, which is credited toward your build."
+            : "Your build request is in. No payment was taken."}{" "}
+          Our team will review your requirements and reach out within{" "}
           <span className="text-white font-medium">24–48 hours</span> with your custom spec sheet.
         </p>
 
